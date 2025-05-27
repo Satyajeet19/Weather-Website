@@ -10,7 +10,7 @@ A sleek and modern **Weather Forecast** web application that lets users check th
 - Displays temperature, feels like temperature, humidity, wind speed, and weather description.
 - Clean, responsive UI with a floating weather card.
 - Smooth animations and visually appealing design.
-- ![Uploading Screenshot 2025-05-27 at 1.36.21 PM.png…]()
+
 
 
 ---
