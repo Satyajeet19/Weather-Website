@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: white;
+      padding: 20px;
+      perspective: 1000px;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 3rem;
+      font-weight: 600;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
+    .search {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    input {
+      padding: 12px 15px;
+      border-radius: 12px;
+      border: none;
+      width: 220px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 12px 25px;
+      border-radius: 12px;
+      border: none;
+      background-color: #ffffff;
+      color: #3b82f6;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    button:hover {
+      background-color: #3b82f6;
+      color: #ffffff;
+    }
+    .card {
+      background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+      color: #ffffff;
+      padding: 30px;
+      border-radius: 25px;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% {
+        transform: rotateY(0deg) translateY(0);
+      }
+      50% {
+        transform: rotateY(10deg) translateY(-10px);
+      }
+    }
+    .card h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .temperature {
+      font-size: 3.5rem;
+      color: #ffe600;
+      margin: 15px 0;
+    }
+    .description {
+      text-transform: capitalize;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+    .details {
+      font-size: 1rem;
+      color: #f3f4f6;
+    }
+    .error {
+      background: rgba(255, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      color: #ff0000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌈 Weather Forecast</h1>
+  <div class="search">
+    <input type="text" id="cityInput" placeholder="Enter city name" />
+    <button onclick="fetchWeather()">Search</button>
+  </div>
+  <div id="weatherCard"></div>
+
+  <script>
+    async function fetchWeather() {
+      const city = document.getElementById("cityInput").value.trim();
+      if (!city) {
+        document.getElementById("weatherCard").innerHTML = `<div class="error">Please enter a city name.</div>`;
+        return;
+      }
+
+      const apiKey = "96cd0de30936e8789e31803a1b69da47"; // Replace with your actual OpenWeatherMap API key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        const weather = await response.json();
+
+        if (weather.cod !== 200) {
+          document.getElementById("weatherCard").innerHTML = `<div class="error">${weather.message}</div>`;
+          return;
+        }
+
+        document.getElementById("weatherCard").innerHTML = `
+          <div class="card">
+            <h2>${weather.name}, ${weather.sys.country}</h2>
+            <p class="description">${weather.weather[0].description}</p>
+            <div class="temperature">${Math.round(weather.main.temp)}&deg;C</div>
+            <div class="details">
+              🌡️ Feels like: ${Math.round(weather.main.feels_like)}&deg;C<br />
+              💧 Humidity: ${weather.main.humidity}%<br />
+              🌬️ Wind: ${weather.wind.speed} m/s
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        document.getElementById("weatherCard").innerHTML = `<div class="error">Error fetching weather data.</div>`;
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
